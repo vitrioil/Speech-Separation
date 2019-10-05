@@ -129,3 +129,4 @@ dmypy.json
 env/
 *.csv
 misc/
+data/
