@@ -23,7 +23,8 @@ fetch_clip() {
       -ss "$2" -to "$3" "./${outname}_out.wav"
     sox -t wav "./${outname}_out.wav" "./${outname}_new.wav" trim 0 00:03
     sox -t wav "./${outname}_new.wav" -r 16000 -c 1 -b 8 "./${outname}_out.wav"
-    mv "./${outname}_out.wav" "./audio/$outname.wav"
+    sox -v 0.5 "./${outname}_out.wav" "./${outname}_new.wav"
+    mv "./${outname}_new.wav" "./audio/$outname.wav"
     rm "./${outname}.wav"
   else
     # Give the user a chance to Ctrl+C.
