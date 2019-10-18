@@ -1,9 +1,0 @@
-{
-    "python.pythonPath": "/usr/bin/python3",
-    "files.exclude": {
-        "**/.classpath": true,
-        "**/.project": true,
-        "**/.settings": true,
-        "**/.factorypath": true
-    }
-}
