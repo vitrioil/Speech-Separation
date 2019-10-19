@@ -8,4 +8,4 @@ mkdir -p data/train/audio/
 mkdir -p data/train/mixed
 
 #Install dependencies
-pip install -r requirements.txt
+pip --user install -r requirements.txt
