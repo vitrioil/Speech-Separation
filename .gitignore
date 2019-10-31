@@ -130,3 +130,4 @@ env/
 *.csv
 misc/
 data/
+logdir/
