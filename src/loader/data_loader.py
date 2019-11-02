@@ -14,7 +14,8 @@ class AVDataset(torch.utils.data.Dataset):
     
 
     def __init__(self, dataset_df_path: Path, video_base_dir: Path, input_df_path: Path,
-                input_audio_size=2, use_cuda=False, face_embed_cuda=True, use_half=True):
+                input_audio_size=2, use_cuda=False, face_embed_cuda=True, use_half=True,
+                all_embed_saved=True):
         """
             
             Args:
@@ -25,21 +26,23 @@ class AVDataset(torch.utils.data.Dataset):
                 use_cuda: cuda for the dataset
                 face_embed_cuda: cuda for pre-trained models
                 use_half: use_half precision for pre-trained models
+                all_embed_saved: true, if all embeddings are saved, so no
+                                 need to load resnet/mtcnn
         """
         self.input_audio_size = input_audio_size
 
-        self.dataset_df = pd.read_csv(dataset_df_path.as_posix())
-        self.file_names = self.dataset_df.iloc[:, 0]
-        
-        #All cropped, pre-processed videos
-        self.file_names = [os.path.join(video_base_dir.as_posix(), f + "_final.mp4") 
-                        for f in self.file_names]
+        #self.dataset_df = pd.read_csv(dataset_df_path.as_posix())
+        #self.file_names = self.dataset_df.iloc[:, 0]
+        #
+        ##All cropped, pre-processed videos
+        #self.file_names = [os.path.join(video_base_dir.as_posix(), f + "_final.mp4") 
+        #                for f in self.file_names]
 
-        self.start_times = self.dataset_df.iloc[:, 1]
-        self.end_times = self.dataset_df.iloc[:, 2]
+        #self.start_times = self.dataset_df.iloc[:, 1]
+        #self.end_times = self.dataset_df.iloc[:, 2]
 
-        self.face_x = self.dataset_df.iloc[:, 3]
-        self.face_y = self.dataset_df.iloc[:, 4]
+        #self.face_x = self.dataset_df.iloc[:, 3]
+        #self.face_y = self.dataset_df.iloc[:, 4]
 
         #NOTE: All the above information is not being used anywhere right now.
 
@@ -60,27 +63,28 @@ class AVDataset(torch.utils.data.Dataset):
         self.use_half = use_half
 
         #Load pre-trained face processing models
-        self.mtcnn = MTCNN(keep_all=True).eval()
-        self.resnet = InceptionResnetV1(pretrained="vggface2").eval()
+        if not all_embed_saved:
+            self.mtcnn = MTCNN(keep_all=True).eval()
+            self.resnet = InceptionResnetV1(pretrained="vggface2").eval()
 
-        if self.face_embed_cuda:
-            self.mtcnn = self.mtcnn.cuda()
-            self.resnet = self.resnet.cuda()
+            if self.face_embed_cuda:
+                device = torch.device("cuda:0")
+                self.mtcnn = self.mtcnn.to(device)
+                self.resnet = self.resnet.to(device)
 
-            self.mtcnn.device = torch.device("cuda:0")
+                self.mtcnn.device = device
 
-        if self.use_half:
-            self.resnet = self.resnet.half()
-            #mtcnn doesn't support half precision inputs...
+            if self.use_half:
+                self.resnet = self.resnet.half()
+                #mtcnn doesn't support half precision inputs...
 
 
-        print(f"MTCNN has {sum(np.prod(i.shape) for i in self.mtcnn.parameters())} parameters")
-        print(f"RESNET has {sum(np.prod(i.shape) for i in self.resnet.parameters())} parameters")
+            print(f"MTCNN has {sum(np.prod(i.shape) for i in self.mtcnn.parameters())} parameters")
+            print(f"RESNET has {sum(np.prod(i.shape) for i in self.resnet.parameters())} parameters")
 
     def __len__(self):
         return len(self.input_df)
 
-    @profile
     def __getitem__(self, idx):
         row = self.input_df.iloc[idx, :]
         all_signals = []
@@ -105,17 +109,25 @@ class AVDataset(torch.utils.data.Dataset):
             #convert to tensor
             audio_tensors.append(torch.from_numpy(spectrogram))
 
+            #check if the embedding is saved
+            if all_signals[i].embed_is_saved():
+                embeddings = torch.from_numpy(all_signals[i].get_embed())
+                video_tensors.append(embeddings)
+                continue
+
             #retrieve video frames
             raw_frames = all_signals[i].get_video()
+            print(raw_frames.shape)
             
             #NOTE: use_cuda = True, only if VRAM ~ 7+GB, if RAM < 8GB it will not work...
             #run the detector and embedder on raw frames
-            embeddings = input_face_embeddings(raw_frames, is_path=False,
-            mtcnn=self.mtcnn, resnet=self.resnet,
-            face_embed_cuda=self.face_embed_cuda, use_half=self.use_half)
-
+            embeddings = input_face_embeddings(raw_frames, is_path=False, mtcnn=self.mtcnn, resnet=self.resnet,
+                                               face_embed_cuda=self.face_embed_cuda, use_half=self.use_half)
             #clean
             del raw_frames
+
+            #save embeddings if not saved
+            np.save(all_signals[i].embed_path, embeddings.cpu().numpy())
             video_tensors.append(embeddings)
 
         # video tensors are expected to be (75,1,1024) (h,w,c)
@@ -127,11 +139,13 @@ class AVDataset(torch.utils.data.Dataset):
 
         mixed_signal_tensor = torch.Tensor(convert_to_spectrogram(mixed_signal))  #shape  (257,298,2)
         mixed_signal_tensor = torch.transpose(mixed_signal_tensor,0,2) #shape (2,298,257)  , therefore , 2 channels , height = 298 , width = 257	
+        audio_tensors = [i.transpose(0, 2) for i in audio_tensors]
+        audio_tensors = torch.stack(audio_tensors)
+        audio_tensors = audio_tensors.permute(1, 2, 3, 0).to(self.device)
 
-        if self.use_cuda:
-            audio_tensors = [a.cuda() for a in audio_tensors]
-            video_tensors = [a.cuda() for a in video_tensors]
-            mixed_signal_tensor = mixed_signal_tensor.cuda()
+        video_tensors = [a.to(self.device) for a in video_tensors]
+        mixed_signal_tensor = mixed_signal_tensor.to(self.device)
+
         return audio_tensors, video_tensors, mixed_signal_tensor
 
 
