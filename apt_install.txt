@@ -1,0 +1,8 @@
+download avspeech and audio set into respective folders
+
+python3-pip
+ffmpeg
+libav-tools
+youtube-dl
+pip install --upgrade git+https://github.com/ytdl-org/youtube-dl.git@master
+sox

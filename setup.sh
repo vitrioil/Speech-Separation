@@ -9,4 +9,4 @@ mkdir -p data/train/mixed
 mkdir -p data/train/embed
 
 #Install dependencies
-pip --user install -r requirements.txt
+pip3 install -r requirements.txt --user
