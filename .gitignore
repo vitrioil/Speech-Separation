@@ -131,3 +131,4 @@ env/
 misc/
 data/
 logdir/
+.vscode/
