@@ -27,3 +27,5 @@ memory-profiler
 lz4
 wandb
 pyarrow
+pytorch-ignite
+mir_eval
