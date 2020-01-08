@@ -9,8 +9,8 @@ joblib==0.13.2
 kiwisolver==1.1.0
 librosa==0.7.0
 llvmlite==0.29.0
-matplotlib==3.1.1
-medipack==2.0.3
+matplotlib
+#medipack==2.0.3
 numba==0.45.1
 numpy==1.17.2
 pandas==0.25.1
