@@ -26,6 +26,6 @@ facenet-pytorch
 memory-profiler
 lz4
 wandb
-pyarrow
+#pyarrow
 pytorch-ignite
 mir_eval
