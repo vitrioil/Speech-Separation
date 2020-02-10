@@ -49,7 +49,7 @@ python3 train.py --bs 20 --workers 4 --cuda True
 # Results
 
 ### Example Prediction after 37 epochs (Suffering from overfitting)
-![validation spectrogram](data/images/validation_example.png "SValidation Spectrogram")
+![validation spectrogram](data/images/validation_example.png "Validation Spectrogram")
 
 ### Loss Plot
 ![loss plot](data/images/loss_plot.png "Loss Plot")
