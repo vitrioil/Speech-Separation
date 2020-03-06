@@ -132,3 +132,10 @@ misc/
 data/
 logdir/
 .vscode/
+*txt
+*pt
+*pth
+build/
+dist/
+*tar.xz
+src/output
