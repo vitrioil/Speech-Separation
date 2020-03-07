@@ -9,7 +9,7 @@ with open('requirements.txt') as f:
 
 setuptools.setup(
     name="src-rvpt", # Replace with your own username
-    version="0.0.1",
+    version="0.0.2",
     author="RVPT",
     description="Speech separation, train, model and utility",
     long_description=long_description,

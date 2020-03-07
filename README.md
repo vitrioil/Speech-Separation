@@ -25,9 +25,14 @@ python3 extract_audio.py
 python3 audio_mixer_generator.py
 ```
 
-## Run the data loader to cache all embeddings and spectrograms
+## Convert the path inside the generated dataframe
 ```bash
-python3 data_loader.py
+python3 transform_df.py
+```
+
+## Run to cache all embeddings
+```bash
+python3 generate_video_embedding.py
 ```
 
 ## Remove corrupt frames
@@ -35,9 +40,9 @@ python3 data_loader.py
 python3 remove_corrupt.py
 ```
 
-## Convert the path inside the generated dataframe
+## Run to cache all spectrograms
 ```bash
-python3 transform_df.py
+python3 convert_to_spec.py
 ```
 
 ## Train the model
