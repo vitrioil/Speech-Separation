@@ -24,3 +24,4 @@ memory-profiler
 lz4
 wandb
 mir_eval
+pysndfx
