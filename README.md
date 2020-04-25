@@ -1,4 +1,4 @@
-This repository handles the training process. For inference, checkout the GUI wrapper: [SpeechSeparationUI](https://github.com/RajKhandor/SpeechSeparationUI) in PyQT.
+<del>This repository handles the training process. For inference, checkout the GUI wrapper: [SpeechSeparationUI](https://github.com/RajKhandor/SpeechSeparationUI) in PyQT.</del>
 
 PyTorch + Catalyst implementation of [Looking to Listen at a Cocktail Party](https://arxiv.org/abs/1804.03619).
 
@@ -55,7 +55,7 @@ PyTorch + Catalyst implementation of [Looking to Listen at a Cocktail Party](htt
         
 During inference
 ```python
-from src_rvpt import generate_audio
+from src import generate_audio, load_model
 ```
 
 # Run
@@ -136,7 +136,7 @@ python3 train.py --bs 20 --workers 4 --cuda True
 
 # Results
 
-Unfortunately, we could not train on the bigger dataset.
+Unfortunately, we could not train on a bigger dataset.
 
 ### Example Prediction after 37 epochs (Suffering from overfitting)
 ![validation spectrogram](data/images/validation_example.png "Validation Spectrogram")
