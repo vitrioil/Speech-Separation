@@ -1,6 +1,6 @@
-<del>This repository handles the training process. For inference, checkout the GUI wrapper: [SpeechSeparationUI](https://github.com/RajKhandor/SpeechSeparationUI) in PyQT.</del>
-
 PyTorch + Catalyst implementation of [Looking to Listen at a Cocktail Party](https://arxiv.org/abs/1804.03619).
+
+<del>This repository handles the training process. For inference, checkout the GUI wrapper: [SpeechSeparationUI](https://github.com/RajKhandor/SpeechSeparationUI) in PyQT.</del>
 
 # Table of Contents
 1. [Requirements](#requirements)
