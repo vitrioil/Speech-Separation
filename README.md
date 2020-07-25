@@ -2,6 +2,8 @@ PyTorch + Catalyst implementation of [Looking to Listen at a Cocktail Party](htt
 
 This repository handles the training process. For inference, checkout the GUI wrapper: [SpeechSeparationUI](https://github.com/RajKhandor/SpeechSeparationUI) in PyQT.
 
+This repository has been merged with [asteroid](https://github.com/mpariente/asteroid) as a [recipe](https://github.com/mpariente/asteroid/tree/master/egs/avspeech).
+
 # Table of Contents
 1. [Requirements](#requirements)
 2. [Setup](#setup)
