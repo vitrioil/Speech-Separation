@@ -184,7 +184,7 @@ class Audio_Model(nn.Module):
         batch_size = output_layer.size(0) # N
         height = output_layer.size(2)  # 298
         
-        output_layer = output_layer.view(batch_size,-1,height,1)
+        output_layer = output_layer.transpose(-1, -2).reshape((batch_size, -1, height, 1))
         return output_layer
 
 class Video_Model(nn.Module):
@@ -319,7 +319,7 @@ class Audio_Visual_Fusion(nn.Module):
         complex_mask = torch.sigmoid(self.complex_mask_layer(mixed_av)) #(N,298,2*257*num_person)
         
         batch_size = complex_mask.size(0) #N
-        complex_mask = complex_mask.view(batch_size,2,298,257,self.num_person)
+        complex_mask = complex_mask.view(batch_size, 298, 2, 257, self.num_person).transpose(1, 2)
         
         output_audio = torch.zeros(complex_mask.shape).to(self.device)
         for i in range(self.num_person):
