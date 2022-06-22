@@ -9,7 +9,7 @@ joblib==0.13.2
 kiwisolver==1.1.0
 librosa==0.7.0
 matplotlib
-numpy==1.17.2
+numpy==1.22.0
 pandas==0.25.1
 Pillow==8.1.0
 pycparser==2.19
